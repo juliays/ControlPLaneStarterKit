@@ -1,0 +1,47 @@
+{
+  "id": "/subscriptions/f05811b2-7cce-497c-b2dc-d25305b0da86/resourceGroups/managed-scaled-unit-app-definition-rg/providers/Microsoft.Solutions/applicationDefinitions/Managed-Scale-Unit",
+  "location": "eastus",
+  "name": "Managed-Scale-Unit",
+  "properties": {
+    "artifacts": [
+      {
+        "name": "ApplicationResourceTemplate",
+        "type": "Template",
+        "uri": "https://amastorageprodus.blob.core.windows.net/applicationdefinitions/C2761_F05811B27CCE497CB2DCD25305B0DA86_A206490AAEC839AABBEDB4B1D7BCBAA7D23E6277B5A1F6E5854E65F869FA4228/73bf8d10a387445ca55aa383d73fc684/applicationResourceTemplate.json"
+      },
+      {
+        "name": "CreateUiDefinition",
+        "type": "Custom",
+        "uri": "https://management.azure.com/subscriptions/f05811b2-7cce-497c-b2dc-d25305b0da86/resourceGroups/managed-scaled-unit-app-definition-rg/providers/Microsoft.Solutions/applicationDefinitions/Managed-Scale-Unit/applicationArtifacts/CreateUiDefinition?api-version=2017-09-01"
+      },
+      {
+        "name": "MainTemplateParameters",
+        "type": "Custom",
+        "uri": "https://management.azure.com/subscriptions/f05811b2-7cce-497c-b2dc-d25305b0da86/resourceGroups/managed-scaled-unit-app-definition-rg/providers/Microsoft.Solutions/applicationDefinitions/Managed-Scale-Unit/applicationArtifacts/MainTemplateParameters?api-version=2017-09-01"
+      }
+    ],
+    "authorizations": [
+      {
+        "principalId": "a94ebeeb-1196-44e0-8cfa-7ca1f0af9067",
+        "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+      },
+      {
+        "principalId": "82db9a94-77c9-4c41-9b66-f6541b09fd62",
+        "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+      },
+      {
+        "principalId": "07390a1a-a8bc-4c4a-8c08-e81f05661a22",
+        "roleDefinitionId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+      }
+    ],
+    "description": "Managed Scale Unit Account",
+    "displayName": "Managed Scale Unit",
+    "isEnabled": true,
+    "lockLevel": "ReadOnly",
+    "packageFileUri": "https://poccontrolplane.blob.core.windows.net/managedapp/managedScaleUnit.zip",
+    "deploymentPolicy": {
+      "deploymentMode": "Incremental"
+    }
+  },
+  "type": "Microsoft.Solutions/applicationDefinitions"
+}

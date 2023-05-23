@@ -1,0 +1,70 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "scaleUnitName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]"
+        },
+        "terraformDeploymentFile": {
+            "type": "string"
+        },
+        "terraformFolder": {
+            "type": "string"
+        },
+        "storageAccountName": {
+            "type": "string"
+        },
+        "functionPackageBlobUrl": {
+            "type": "string"
+        },
+        "logAnalyticsWorkspaceId": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "nestedTemplateUri": "[uri(deployment().properties.templateLink.uri, 'nestedtemplates/scaleUnitDefinition.json')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "name": "nestedDeployment",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "contentVersion": "1.0.0.0",
+                    "uri": "[variables('nestedTemplateUri')]"
+                },
+                "parameters": {
+                    "scaleUnitName": {
+                        "value": "[parameters('scaleUnitName')]"
+                    },
+                    "location": {
+                        "value": "[parameters('location')]"
+                    },
+                    "terraformDeploymentFile": {
+                        "value": "[parameters('terraformDeploymentFile')]"
+                    },
+                    "terraformFolder": {
+                        "value": "[parameters('terraformFolder')]"
+                    },
+                    "storageAccountName": {
+                        "value": "[parameters('storageAccountName')]"
+                    },
+                    "functionPackageBlobUrl": {
+                        "value": "[parameters('functionPackageBlobUrl')]"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "[parameters('logAnalyticsWorkspaceId')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {
+    }
+}

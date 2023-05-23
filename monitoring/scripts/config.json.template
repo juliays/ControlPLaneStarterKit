@@ -1,0 +1,8 @@
+{ "eventHubSettings": [ 
+    {
+        "eventHubConnectionString": "<connection string>", 
+        "eventHubName": "<event-hub-name>" 
+    }
+        
+  ] 
+}

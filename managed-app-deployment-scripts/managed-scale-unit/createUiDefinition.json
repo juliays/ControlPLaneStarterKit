@@ -1,0 +1,100 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
+    "handler": "Microsoft.Azure.CreateUIDef",
+    "version": "0.1.2-preview",
+    "parameters": {
+        "resourceTypes": [
+            "microsoft.resources/resourcegroups"
+        ],
+        "basics": [
+            {
+                "name": "scaleUnitName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Scale Unit Name",
+                "defaultValue": "",
+                "toolTip": "Scale Unit Name",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": ""
+                },
+                "visible": true
+            },
+            {
+                "name": "functionPackageBlobUrl",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Function Zip Package URL",
+                "defaultValue": "",
+                "toolTip": "The URL to the Function Zip file",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": ""
+                },
+                "visible": true
+            },
+            {
+                "name": "logAnalyticsWorkspaceId",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Log Analytics Workspace ID",
+                "defaultValue": "",
+                "toolTip": "The Workspace Identifier to the Log Analytics Instance to use",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": ""
+                },
+                "visible": true
+            },
+            {
+                "name": "terraformDeploymentFile",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Terraform Deployment File URL",
+                "defaultValue": "",
+                "toolTip": "The URL to the Terraform Deployment Zip file",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": ""
+                },
+                "visible": true
+            },
+            {
+                "name": "terraformFolder",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Terraform Folder",
+                "defaultValue": "",
+                "toolTip": "The folder to go into (if needed, blank if not) to run the Terraform script from",
+                "constraints": {
+                    "required": false,
+                    "regex": "",
+                    "validationMessage": ""
+                },
+                "visible": true
+            },
+            {
+                "name": "storageAccountName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Storage Account Name to be used for the TFSTATE File",
+                "defaultValue": "",
+                "toolTip": "Storage Account Name for storing TFSTATE files. Default container is tfstate",
+                "constraints": {
+                    "required": true,
+                    "regex": "",
+                    "validationMessage": ""
+                },
+                "visible": true
+            }
+        ],
+        "steps": [],
+        "outputs": {
+            "scaleUnitName": "[basics('scaleUnitName')]",
+            "location": "[location()]",
+            "terraformDeploymentFile": "[basics('terraformDeploymentFile')]",
+            "terraformFolder": "[basics('terraformFolder')]",
+            "storageAccountName": "[basics('storageAccountName')]",
+            "functionPackageBlobUrl": "[basics('functionPackageBlobUrl')]",
+            "logAnalyticsWorkspaceId": "[basics('logAnalyticsWorkspaceId')]"
+        }
+    }
+}

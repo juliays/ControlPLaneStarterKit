@@ -1,0 +1,140 @@
+name: Provision Control Plane
+
+trigger: none
+
+variables:
+  - group: control-plane
+  - name: ARM_SUBSCRIPTION_ID
+    value: $(subscription_id)
+  - name: RESOURCE_GROUP_NAME
+    value: $(resource_group)
+  - name: RESOURCE_GROUP_LOCATION
+    value: $(location)
+  - name: STORAGE_ACCOUNT_NAME
+    value: $(sa_name)
+  - name: CONTAINER_NAME
+    value: $(sa_container)
+  - name: BLOB_FOR_FUNCTION
+    value: blob-function-zip
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+- job: ProvisionControlPlane
+  displayName: Provision Control Plane
+  steps:
+  - checkout: self
+  - task: Bash@3
+    displayName: Set up Terraform state storage accounts
+    inputs:
+      targetType: 'inline'
+      script: |
+        az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+        
+        # check if resource group is there
+        if [[ $(az group list --query "[?name=='$RESOURCE_GROUP_NAME'] | length(@)") > 0 ]]
+        then
+          echo "Resource Group '$RESOURCE_GROUP_NAME' already exists"
+        else
+          # Create resource group
+          az group create -n $RESOURCE_GROUP_NAME -l $RESOURCE_GROUP_LOCATION
+        fi
+        
+        if [[ $(az storage account list --resource-group $RESOURCE_GROUP_NAME --query "[?name=='$STORAGE_ACCOUNT_NAME'] | length(@)") > 0 ]]
+        then
+          echo "Storage Account '$STORAGE_ACCOUNT_NAME' already exists"
+        else
+          # Create storage account
+          az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+        fi
+        
+        function createContainerIfNotExist {
+          echo "creation storage container $1"
+          if [[ $(az storage container list  --account-name $STORAGE_ACCOUNT_NAME --query "[?name=='$1'] | length(@)") > 0 ]]
+          then
+            echo "Storage Container $1 already exists"
+          else
+            # Create blob container
+            az storage container create --name $1 --account-name $STORAGE_ACCOUNT_NAME --auth-mode login --public-access blob
+            echo "Storage Container $1 creation ended with status $?"
+          fi
+        } 
+        createContainerIfNotExist $CONTAINER_NAME
+        createContainerIfNotExist $BLOB_FOR_FUNCTION
+        
+        ACCESS_KEY=`az storage account keys list --account-name $STORAGE_ACCOUNT_NAME -o json | jq -r '.[0].value'`
+    env:
+      ARM_CLIENT_ID:            $(appid)
+      ARM_CLIENT_SECRET:        $(password)
+      ARM_TENANT_ID:            $(tenant)
+  - task: Bash@3
+    displayName: Terraform check and init
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd eng/terraform/control-plane
+        END=`date -u -d "20 minutes" '+%Y-%m-%dT%H:%MZ'`
+        SAS=$(az storage account generate-sas --account-name $STORAGE_ACCOUNT_NAME --expiry $END --https-only --permissions acdlpruw --resource-types sco --services bfqt | sed 's/%3A/:/g;s/\"//g')
+        
+        # this variable used in another task
+        echo "##vso[task.setvariable variable=SAS]$SAS"
+        
+        terraform fmt -check -recursive 
+        terraform init \
+          -backend-config="storage_account_name=$STORAGE_ACCOUNT_NAME" \
+          -backend-config="container_name=$CONTAINER_NAME" \
+          -backend-config="key=controlplane.terraform.tfstate" \
+          -backend-config="sas_token=$SAS"
+    env:
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)
+  - task: Bash@3
+    displayName: Create Terraform vars file
+    inputs:
+      targetType: 'inline'
+      script: |
+        GRAFANA_JSON_LOCATION="`pwd`/sample/eng/monitoring/TopLevelView.json"
+        cd eng/terraform/control-plane
+        cat << EOT >> terraform.tfvars
+        control-plane-resource-group-name = "$RESOURCE_GROUP_NAME"
+        control-plane-resource-tag = "some cool tagging"
+        azure-region = "southcentralus"
+        sql_container_name = "app1"
+        max_throughput = 4000
+        log_analytics_workspace_name = "laws-control-plan"
+        log_analytics_workspace_location="southcentralus"
+        log_analytics_workspace_sku="PerGB2018"
+        log_analytics_workspace_retention=30
+        
+        grafana_name = "grafana-view"
+        grafana_json_location="$GRAFANA_JSON_LOCATION"
+        EOT
+        cat terraform.tfvars
+    env:
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)
+  - task: Bash@3
+    displayName: Terraform Plan
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd eng/terraform/control-plane
+        terraform plan -out control-plane.plan -input=false -no-color -var ARM_CLIENT_ID=$ARM_CLIENT_ID
+    env:
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)
+  - task: Bash@3
+    displayName: Terraform Apply
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd eng/terraform/control-plane
+        terraform apply -auto-approve control-plane.plan
+    env:
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)

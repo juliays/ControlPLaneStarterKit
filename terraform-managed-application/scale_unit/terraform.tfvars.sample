@@ -1,0 +1,5 @@
+name-prefix      = "starfish"
+resource-group   = "starfish-rg"
+blob-package-url = "https://abcfuncappsa.blob.core.windows.net/funcs/funcs.zip"
+azure-region     = "centralus"
+log-analytics-workspace-id = "/subscriptions/abcd1234-1234-abcd-1234-abcdef123456/resourceGroups/MyResourceGroup/providers/Microsoft.OperationalInsights/workspaces/MyLogAnalyticsWorkspace"

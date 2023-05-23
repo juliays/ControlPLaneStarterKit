@@ -1,0 +1,4 @@
+Resources
+| where type == "microsoft.solutions/applications"
+| where split(parse_json(properties).applicationDefinitionId,"/")[array_length(split(parse_json(properties).applicationDefinitionId,"/")) - 1] == ("Managed-Scale-Unit") $filtering
+| project name, resourceGroup = split(parse_json(properties).managedResourceGroupId,'/')[4]

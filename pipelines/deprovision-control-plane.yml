@@ -1,0 +1,109 @@
+name: Deprovision Control Plane
+
+trigger: none
+
+variables:
+  - group: control-plane
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+- job: DeprovisionControlPlane
+  displayName: Provision Control Plane
+  steps:
+  - checkout: self
+  - task: Bash@3
+    displayName: Login and get access key
+    inputs:
+      targetType: 'inline'
+      script: |
+        az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+
+        ACCESS_KEY=`az storage account keys list --account-name $STORAGE_ACCOUNT_NAME -o json | jq -r '.[0].value'`
+    env:
+      ARM_CLIENT_ID:            $(appid)
+      ARM_CLIENT_SECRET:        $(password)
+      ARM_TENANT_ID:            $(tenant)
+      RESOURCE_GROUP_NAME:      $(resource_group)
+      RESOURCE_GROUP_LOCATION:  $(location)
+      STORAGE_ACCOUNT_NAME:     $(sa_name)
+      CONTAINER_NAME:           $(sa_container)
+  - task: Bash@3
+    displayName: Terraform check and init
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd eng/terraform/control-plane
+        END=`date -u -d "20 minutes" '+%Y-%m-%dT%H:%MZ'`
+        SAS=$(az storage account generate-sas --account-name $STORAGE_ACCOUNT_NAME --expiry $END --https-only --permissions acdlpruw --resource-types sco --services bfqt | sed 's/%3A/:/g;s/\"//g')
+        terraform fmt -check -recursive
+        terraform init \
+          -backend-config="storage_account_name=$STORAGE_ACCOUNT_NAME" \
+          -backend-config="container_name=$CONTAINER_NAME" \
+          -backend-config="key=controlplane.terraform.tfstate" \
+          -backend-config="sas_token=$SAS"
+    env:
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)
+      RESOURCE_GROUP_NAME:  $(resource_group)
+      STORAGE_ACCOUNT_NAME: $(sa_name)
+      CONTAINER_NAME:       $(sa_container)
+  - task: Bash@3
+    displayName: Create Terraform vars file
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd eng/terraform/control-plane
+        cat << EOT >> terraform.tfvars
+        control-plane-resource-group-name = "$RESOURCE_GROUP_NAME"
+        control-plane-resource-tag = "some cool tagging"
+        azure-region = "southcentralus"
+        sql_container_name = "app1"
+        max_throughput = 4000
+        log_analytics_workspace_name = "laws-control-plan"
+        log_analytics_workspace_location="southcentralus"
+        log_analytics_workspace_sku="PerGB2018"
+        log_analytics_workspace_retention=30
+        EOT
+        cat terraform.tfvars
+    env:
+      ARM_SUBSCRIPTION_ID:  $(subscription_id)
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)
+      RESOURCE_GROUP_NAME:  $(resource_group)
+      STORAGE_ACCOUNT_NAME: $(sa_name)
+      CONTAINER_NAME:       $(sa_container)
+  - task: Bash@3
+    displayName: Terraform Plan
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd eng/terraform/control-plane
+        terraform plan -destroy -out control-plane.plan -input=false -no-color
+    env:
+      ARM_SUBSCRIPTION_ID:  $(subscription_id)
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)
+      RESOURCE_GROUP_NAME:  $(resource_group)
+      STORAGE_ACCOUNT_NAME: $(sa_name)
+      CONTAINER_NAME:       $(sa_container)
+  - task: Bash@3
+    displayName: Terraform Destroy
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd eng/terraform/control-plane
+        terraform apply -destroy -auto-approve control-plane.plan
+    env:
+      ARM_SUBSCRIPTION_ID:  $(subscription_id)
+      ARM_CLIENT_ID:        $(appid)
+      ARM_CLIENT_SECRET:    $(password)
+      ARM_TENANT_ID:        $(tenant)
+      RESOURCE_GROUP_NAME:  $(resource_group)
+      STORAGE_ACCOUNT_NAME: $(sa_name)
+      CONTAINER_NAME:       $(sa_container)
+

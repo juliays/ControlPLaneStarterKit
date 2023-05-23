@@ -1,0 +1,73 @@
+name: Provision Control Plane
+
+trigger: 
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - vendor/azure
+    exclude:
+    - *
+    - vendor/azure/**/*.md
+
+variables:
+  - group: control-plane
+
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+- job: BuildDeployManagedApp
+  displayName: Build and Deploy Azure Managed Application
+  steps:
+  - checkout: self
+  - task: Bash@3
+    displayName: Build and deploy
+    inputs:
+      targetType: 'inline'
+      script: |
+        az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+
+        # check if resource group is there
+        if [[ $(az group list --query "[?name=='$RESOURCE_GROUP_NAME'] | length(@)") > 0 ]]
+        then
+          echo "Resource Group already exists"
+        else
+          # Create resource group
+          az group create -n $RESOURCE_GROUP_NAME -l $RESOURCE_GROUP_LOCATION
+        fi
+        
+        # check if storage account is there
+        if [[ $(az storage account list --resource-group $RESOURCE_GROUP_NAME --query "[?name=='$STORAGE_ACCOUNT_NAME'] | length(@)") > 0 ]]
+        then
+          echo "Storage Account already exists"
+        else
+          # Create storage account
+          az storage account create --resource-group $RESOURCE_GROUP_NAME --name $STORAGE_ACCOUNT_NAME --sku Standard_LRS --encryption-services blob
+        fi
+        
+        # check if container is there
+        if [[ $(az storage container list  --account-name $STORAGE_ACCOUNT_NAME --query "[?name=='$MANAGED_APP_CONTANIER_NAME'] | length(@)") > 0 ]]
+        then
+          echo "Storage Container $MANAGED_APP_CONTANIER_NAME already exists"
+        else
+          # Create blob container
+          az storage container create --name $MANAGED_APP_CONTANIER_NAME --account-name $STORAGE_ACCOUNT_NAME --auth-mode login --public-access blob
+          echo "Storage Container $MANAGED_APP_CONTANIER_NAME creation ended with status $?"
+        fi
+
+        cd vendor/azure
+        ./refresh-zipfiles.sh
+        az storage blob upload -f ./managed-scale-unit/managedScaleUnit.zip -c $MANAGED_APP_CONTANIER_NAME -n managedScaleUnit.zip
+
+    env:
+      ARM_CLIENT_ID:              $(appid)
+      ARM_CLIENT_SECRET:          $(password)
+      ARM_TENANT_ID:              $(tenant)
+      RESOURCE_GROUP_NAME:        $(resource_group)
+      RESOURCE_GROUP_LOCATION:    $(location)
+      STORAGE_ACCOUNT_NAME:       $(sa_name)
+      CONTAINER_NAME:             $(sa_container)
+      MANAGED_APP_CONTANIER_NAME: $(managed_app_container)
+

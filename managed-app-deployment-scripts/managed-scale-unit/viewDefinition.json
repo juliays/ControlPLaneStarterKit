@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/viewdefinition/0.0.1-preview/ViewDefinition.json#",
+  "contentVersion": "0.0.0.1",
+  "views": [
+    {
+      "kind": "Overview",
+      "properties": {
+        "header": "Welcome to the Managed Scale Unit",
+        "description": "This managed application was created by the Viper Team and is for demo purposes only. Please navigate to https://grafana-test-gm-ys-djfhdpapgkbgdkbs.eus.grafana.azure.com/d/OLOcC0-Vz/toplevelview?orgId=1 if you would like to see the state of the entire Scale Unit deployment.",
+        "version": "1.0.0",
+        "commands": [
+          {
+            "displayName": "Drain Traffic",
+            "path": "drainTraffic",
+            "icon": "Stop"
+          },
+          {
+            "displayName": "Restart Aggregator",
+            "path": "restartAggregator",
+            "icon": "Refresh"
+          }
+        ]
+      }
+    }
+ ]
+}

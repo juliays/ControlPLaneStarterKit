@@ -1,0 +1,155 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "scaleUnitName": {
+          "type": "string",
+          "metadata": {
+              "description": "Scale Unit Name"
+          }
+      },
+      "terraformDeploymentFile": {
+        "type": "string",
+        "metadata": {
+            "description": "Terraform Deployment File URL"
+        }
+      },
+      "terraformFolder": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+            "description": "Folder in zip file to start from if any"
+        }
+      },
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+            "description": "Storage account location"
+        }
+      },
+      "storageAccountName": {
+        "type": "string",
+        "metadata": {
+            "description": "Storage Account Name for storing TFSTATE files. Default container is tfstate"
+        }
+      },
+      "functionPackageBlobUrl": {
+        "type": "string",
+        "metadata": {
+            "description": "The URL to the Function Zip file"
+        }
+      },
+      "logAnalyticsWorkspaceId": {
+        "type": "string",
+        "metadata": {
+            "description": "The Workspace Identifier to the Log Analytics Instance to use"
+        }
+      },
+      "utcValue": {
+        "type": "string",
+        "defaultValue": "[utcNow()]"
+      }
+    },
+    "variables": {
+        "utcValue" : "parameters('utcValue')",
+        "tenantId" : "[subscription().tenantId]",
+        "identity" : "/subscriptions/f05811b2-7cce-497c-b2dc-d25305b0da86/resourceGroups/rg-ys/providers/Microsoft.ManagedIdentity/userAssignedIdentities/deployment_controller",
+        "tfstateFileName" : "[concat(parameters('scaleUnitName'), '.managedscaleunit.terraform.tfstate')]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Resources/deploymentScripts",
+        "apiVersion": "2020-10-01",
+        "name": "runBashWithOutputs",
+        "location": "[resourceGroup().location]",
+        "kind": "AzureCLI",
+        "identity": {
+          "type": "UserAssigned",
+          "userAssignedIdentities": {
+            "[variables('identity')]": {
+            }
+          }
+        },
+        "properties": {
+          "forceUpdateTag": "[parameters('utcValue')]",
+          "azCliVersion": "2.40.0",
+          "timeout": "PT30M",
+          "environmentVariables": [
+            {
+              "name": "ARM_RESOURCE_GROUP_NAME",
+              "value": "[resourceGroup().name]"
+            },
+            {
+              "name": "TF_SCALE_UNIT_NAME",
+              "value": "[parameters('scaleUnitName')]"
+            },
+            {
+              "name": "ARM_STORAGE_ACCOUNT_NAME",
+              "value": "[parameters('storageAccountName')]"
+            },
+            {
+              "name": "ARM_CONTAINER_NAME",
+              "value": "tfstate"
+            },
+            {
+              "name": "ARM_KEY",
+              "value": "[variables('tfstateFileName')]"
+            },
+            {
+              "name": "ARM_USE_MSI",
+              "value": "true"
+            },
+            {
+              "name": "ARM_SUBSCRIPTION_ID",
+              "value": "[subscription().subscriptionId]"
+            },
+            {
+              "name": "ARM_TENANT_ID",
+              "value": "[subscription().tenantId]"
+            },
+            {
+              "name": "TF_ZIP_LOCATION",
+              "value": "[parameters('terraformDeploymentFile')]"
+            },
+            {
+              "name": "TF_ZIP_LOCATION_FOLDER",
+              "value": "[parameters('terraformFolder')]"
+            },
+            {
+              "name": "TF_ZIP_BLOB_LOCATION",
+              "value": "[parameters('functionPackageBlobUrl')]"
+            },
+            {
+              "name": "TF_LA_WORKSPACE_ID",
+              "value": "[parameters('logAnalyticsWorkspaceId')]"
+            },
+            {
+              "name": "TF_RG_LOCATION",
+              "value": "[resourceGroup().location]"
+            }
+          ],
+          "scriptContent": "
+            az login --identity
+            wget --no-check-certificate https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip
+            unzip terraform_1.3.9_linux_amd64.zip -d /usr/local/bin
+            rm terraform_1.3.9_linux_amd64.zip
+            wget $TF_ZIP_LOCATION
+            unzip -q *.zip
+            cd terraform
+            cd $TF_ZIP_LOCATION_FOLDER
+            echo -e \"name-prefix=\\\"\"$TF_SCALE_UNIT_NAME\"\\\"\\nresource-group=\\\"\"$ARM_RESOURCE_GROUP_NAME\"\\\"\\nblob-package-url=\\\"\"$TF_ZIP_BLOB_LOCATION\"\\\"\\nazure-region=\\\"\"$TF_RG_LOCATION\"\\\"\\nlog-analytics-workspace-id=\\\"\"$TF_LA_WORKSPACE_ID\"\\\"\" > terraform.tfvars
+            ACCOUNT_KEY=$(az storage account keys list --account-name $ARM_STORAGE_ACCOUNT_NAME --query '[0].value' -o tsv)
+            export ARM_ACCESS_KEY=$ACCOUNT_KEY
+            terraform fmt -check -recursive
+            terraform init -backend-config=\"storage_account_name=$ARM_STORAGE_ACCOUNT_NAME\" -backend-config=\"container_name=$ARM_CONTAINER_NAME\" -backend-config=\"key=$ARM_KEY\" -backend-config=\"resource_group_name=$ARM_RESOURCE_GROUP_NAME\"
+            terraform apply -auto-approve
+          ",
+          "cleanupPreference": "OnSuccess",
+          "retentionInterval": "P1D"
+        }
+      }
+    ],
+    "outputs": {
+    }
+}

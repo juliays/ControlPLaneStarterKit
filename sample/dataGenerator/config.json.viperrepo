@@ -1,0 +1,57 @@
+{
+    "eventHubSettings": [
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit01-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit01-ccpoc-ehauth-rule;SharedAccessKey=zmkqHP3y/LYpuKtAn9XfUGHNj+Wb4HttZ+AEhK86Pwo=;EntityPath=scunit01-ccpoc-eh",
+            "eventHubName": "scunit01-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit21-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit21-ccpoc-ehauth-rule;SharedAccessKey=GAoqYlZ2X+RnIUQOMAyi+TtPE+u5fC7O7+AEhIm9DxI=;EntityPath=scunit21-ccpoc-eh",
+            "eventHubName": "scunit21-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit22-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit22-ccpoc-ehauth-rule;SharedAccessKey=9r9CLOTUSV/XOmRq0QnRMEQhyX1fB4/of+AEhNfR+fw=;EntityPath=scunit22-ccpoc-eh",
+            "eventHubName": "scunit22-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit23-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit23-ccpoc-ehauth-rule;SharedAccessKey=XTF+5x2tHPIdLzvNWshqDDm3LiGZHYcTE+AEhPxsjPU=;EntityPath=scunit23-ccpoc-eh",
+            "eventHubName": "scunit23-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit24-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit24-ccpoc-ehauth-rule;SharedAccessKey=nndfS1GH8NZ0yXD/gXZSo6ua6QpqWQviU+AEhMIG+iM=;EntityPath=scunit24-ccpoc-eh",
+            "eventHubName": "scunit24-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit25-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit25-ccpoc-ehauth-rule;SharedAccessKey=tCfxLZIgcw+NRo1jlvarqRFczflG46Yfs+AEhK+KX38=;EntityPath=scunit25-ccpoc-eh",
+            "eventHubName": "scunit25-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit26-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit26-ccpoc-ehauth-rule;SharedAccessKey=ERQGwJqKuOwiK8NxOycrJJfc2U5PtJ9Pc+AEhGN3JB8=;EntityPath=scunit26-ccpoc-eh",
+            "eventHubName": "scunit26-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit27-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit27-ccpoc-ehauth-rule;SharedAccessKey=ys67DdjVrljtY46/Y4hYYaGr7Ym+u8VXa+AEhIzYejA=;EntityPath=scunit27-ccpoc-eh",
+            "eventHubName": "scunit27-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit28-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit28-ccpoc-ehauth-rule;SharedAccessKey=vrn93qquxiXDX0CbSzPdYO6ky3prI17Es+AEhNnszn4=;EntityPath=scunit28-ccpoc-eh",
+            "eventHubName": "scunit28-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit29-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit29-ccpoc-ehauth-rule;SharedAccessKey=M8iVGg/RNuDdbd/E1+JAGS7l/25jIdjf++AEhCuzm5M=;EntityPath=scunit29-ccpoc-eh",
+            "eventHubName": "scunit29-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://scunit30-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=scunit30-ccpoc-ehauth-rule;SharedAccessKey=3DnkneORp8ddk78uGQ71pHhjU0aYEQN3X+AEhI51q6s=;EntityPath=scunit30-ccpoc-eh",
+            "eventHubName": "scunit30-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://tddscunit01-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=tddscunit01-ccpoc-ehauth-rule;SharedAccessKey=u8dKkmTez+ZeUmqLyrQWthM+N2VE7vXqj+AEhKdEGiw=;EntityPath=tddscunit01-ccpoc-eh",
+            "eventHubName": "tddscunit01-ccpoc-eh"
+        },
+        {
+            "eventHubConnectionString": "Endpoint=sb://tddscunit02-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=tddscunit02-ccpoc-ehauth-rule;SharedAccessKey=Iaruae1FFp2irXEJ7hBWs/MTwBjbC56ej+AEhOsRrLo=;EntityPath=tddscunit02-ccpoc-eh",
+            "eventHubName": "tddscunit02-ccpoc-eh"
+        }
+        
+    ]
+}

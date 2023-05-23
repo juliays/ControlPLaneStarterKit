@@ -1,0 +1,8 @@
+{
+    "eventHubSettings": [
+        {
+            "eventHubConnectionString": "Endpoint=sb://sccaleunit07-ccpoc-ehn.servicebus.windows.net/;SharedAccessKeyName=sccaleunit07-ccpoc-ehauth-rule;SharedAccessKey=oPsSMfAkdp1kMsJp/7h2a/dpa2JBOCua++AEhH2LOAg=;EntityPath=sccaleunit07-ccpoc-eh",
+            "eventHubName": "sccaleunit07-ccpoc-eh"
+        }
+    ]
+}

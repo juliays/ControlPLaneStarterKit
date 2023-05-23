@@ -1,0 +1,12 @@
+control-plane-resource-group-name = "testrg"
+control-plane-resource-tag        = "some cool tagging"
+azure-region                      = "southcentralus"
+sql_container_name                = "app1"
+max_throughput                    = 4000
+log_analytics_workspace_name      = "laws-control-plan"
+log_analytics_workspace_location  = "southcentralus"
+log_analytics_workspace_sku       = "PerGB2018"
+log_analytics_workspace_retention = 30
+
+grafana_json_location             = "/path/grafana-dashboard.json"
+grafana_name                      = "grafana stack"

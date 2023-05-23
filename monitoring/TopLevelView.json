@@ -1,0 +1,1340 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_AZURE_MONITOR",
+      "label": "Azure Monitor",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "grafana-azure-monitor-datasource",
+      "pluginName": "Azure Monitor"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.3.8"
+    },
+    {
+      "type": "datasource",
+      "id": "grafana-azure-monitor-datasource",
+      "name": "Azure Monitor",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${DS_AZURE_MONITOR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 12000,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 5000
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "max",
+                "value": 110
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 150
+                    },
+                    {
+                      "color": "red",
+                      "value": 300
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Agg. Duration"
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 70
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "StorageIngress"
+            },
+            "properties": [
+              {
+                "id": "max",
+                "value": 6000000
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 500000
+                    },
+                    {
+                      "color": "red",
+                      "value": 5000000
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Storage Ingress"
+              },
+              {
+                "id": "unit",
+                "value": "Bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Incoming"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Incoming Requests"
+              },
+              {
+                "id": "unit",
+                "value": "reqps"
+              },
+              {
+                "id": "max",
+                "value": 15000
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 5000
+                    },
+                    {
+                      "color": "red",
+                      "value": 10000
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 0,
+        "y": 0
+      },
+      "id": 20,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "9.3.8",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let timeTo = $__timeTo();\r\nlet eh_incoming = \r\nAzureMetrics\r\n| where ResourceProvider == \"MICROSOFT.EVENTHUB\"\r\n| where MetricName == \"IncomingRequests\" and tolower(ResourceGroup) in ($resourceGroups)\r\n| where TimeGenerated > timeTo - 30m and TimeGenerated <= timeTo\r\n| summarize IncomingByUnit = avg(Total) by _ResourceId\r\n| summarize  Incoming = percentiles(IncomingByUnit,  95)\r\n| project  Incoming, id=1;\r\nlet af_duration = \r\nAppMetrics\r\n| where Name == \"BlobAggregator AvgDurationMs\"\r\n| where TimeGenerated > timeTo - 30m  and TimeGenerated <= timeTo\r\n| where split(_ResourceId,\"/\")[4] in ($resourceGroups)\r\n| summarize  DurationByUnit = avg(Max) by _ResourceId\r\n| summarize Duration =  percentiles(DurationByUnit,  95)\r\n| project  Duration, id = 1;\r\nlet storage_ingress =\r\nAzureMetrics\r\n| where ResourceProvider == \"MICROSOFT.STORAGE\" and MetricName == \"Ingress\" and tolower(ResourceGroup) in ($resourceGroups)\r\n| where TimeGenerated > timeTo - 30m  and TimeGenerated <= timeTo\r\n| summarize IngressByUnit = avg(Average) by _ResourceId\r\n| summarize StorageIngress = percentiles(IngressByUnit, 95)\r\n| project StorageIngress, id = 1;\r\neh_incoming\r\n| join kind = inner af_duration on id\r\n| join kind = inner storage_ingress on id\r\n| project Incoming, Duration, StorageIngress",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "SLOs across Units",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${DS_AZURE_MONITOR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "transparent",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Degraded"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "yellow",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Show units",
+                    "url": "/d/${__dashboard.uid}/${__dashboard}?orgId=1&var-Health=Degraded&${Location:queryparam}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Unhealthy"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "dark-red",
+                      "value": null
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Show Units",
+                    "url": "/d/${__dashboard.uid}/${__dashboard}?orgId=1&var-Health=Unhealthy&${Location:queryparam}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Show Units",
+                    "url": "/d/${__dashboard.uid}/${__dashboard}?orgId=1&var-Health=All&${Location:queryparam}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 5
+      },
+      "id": 79,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.3.8",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let unitHealths= split(\"$UnitSLOs\",\",\");\r\nrange x1 from 0 to array_length(unitHealths) - 1 step 1\r\n| project degraded = iff(split(unitHealths[x1],\";\")[1] == \"2\", 1, 0), unhealthy = iff(split(unitHealths[x1],\";\")[1] == \"3\", 1, 0)\r\n| summarize Total = count(), Degraded = sum(degraded), Unhealthy = sum(unhealthy)",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Unit Health",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "${DS_AZURE_MONITOR}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text",
+            "inspect": false
+          },
+          "links": [
+            {
+              "title": "Show SLO",
+              "url": "/d/${__dashboard.uid}/${__dashboard}?orgId=1&ScaleUnit=$Degraded"
+            }
+          ],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byType",
+              "options": "string"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Show SLOs",
+                    "url": "/d/${__dashboard.uid}/${__dashboard}?orgId=1&var-unitOverride=${__value.raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Unhealthy"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Degraded"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "yellow",
+                      "value": null
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 8,
+        "y": 5
+      },
+      "id": 81,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 0,
+        "showHeader": true
+      },
+      "pluginVersion": "9.3.8",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let unitHealths= split(\"$UnitSLOs\",\",\");\r\nrange x1 from 0 to array_length(unitHealths) - 1 step 1\r\n| where split(unitHealths[x1],\";\")[1] == \"2\"\r\n| project Degraded =substring(split(unitHealths[x1],\";\")[0],1)\r\n| sort by Degraded asc\r\n",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan",
+            "resultFormat": "table"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        },
+        {
+          "azureLogAnalytics": {
+            "query": "let unitHealths= split(\"$UnitSLOs\",\",\");\r\nrange x1 from 0 to array_length(unitHealths) - 1 step 1\r\n| where split(unitHealths[x1],\";\")[1] == \"3\"\r\n| project Unhealthy =substring(split(unitHealths[x1],\";\")[0],1)\r\n| sort by Unhealthy asc\r\n",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan",
+            "resultFormat": "table"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "B"
+        },
+        {
+          "azureLogAnalytics": {
+            "query": "let unitHealths= split(\"$UnitSLOs\",\",\");\r\nrange x1 from 0 to array_length(unitHealths) - 1 step 1\r\n| where split(unitHealths[x1],\";\")[1] == \"1\"\r\n| project Healthy =substring(split(unitHealths[x1],\";\")[0],1)\r\n| sort by Healthy asc\r\n",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "C"
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 31,
+      "panels": [],
+      "repeat": "UnitsToDisplay",
+      "repeatDirection": "h",
+      "title": "$UnitsToDisplay",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "neutral": 0
+          },
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Scale Unit Level View",
+              "url": "/d/DIeHXGx4z/scaleunitview?orgId=1&var-managedApp=$managedApp&var-scaleUnit=$UnitsToDisplay"
+            }
+          ],
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "No Units"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "Healthy"
+                },
+                "2": {
+                  "color": "orange",
+                  "index": 2,
+                  "text": "Degraded"
+                },
+                "3": {
+                  "color": "red",
+                  "index": 3,
+                  "text": "Unhealthy"
+                },
+                "4": {
+                  "index": 4,
+                  "text": "No Unit"
+                },
+                "": {
+                  "color": "red",
+                  "index": 5,
+                  "text": "Reading Error!"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 4,
+          "min": 0,
+          "noValue": "ReadingError!",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "#EAB839",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "health"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Scale Unit Level View - $UnitsToDisplay",
+                    "url": "/d/e9L8rEb4z/scaleunitview-azure-monitor-metrics?orgId=1&var-managedApp=$managedApp&var-scaleUnit=$UnitsToDisplay"
+                  }
+                ]
+              },
+              {
+                "id": "max",
+                "value": 4
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 13
+      },
+      "id": 4,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Scale Unit Azure Portal",
+          "url": "https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/rg-Managed-ScaleUnit/providers/Microsoft.Solutions/applications/${UnitsToDisplay}﻿/overview"
+        }
+      ],
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^health$/",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.3.8",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let unitToDisplay = iff(\"$UnitsToDisplay\" == \"\", \"No Units\", split(\"$UnitsToDisplay\", \"'\")[1]);\nlet unitDetails = split(iff(\"$UnitsToDisplay\" == \"\", \"No Unit;4;0;0;0\", substring(\"$UnitSLOs\", indexof(\"$UnitSLOs\",unitToDisplay))),\"'\")[0];\nrange x1 from 0 to 0 step 1\n| project health = split(unitDetails,\";\")[1]",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Unit $UnitsToDisplay",
+      "transformations": [],
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Scale Unit Level View",
+              "url": "/d/DIeHXGx4z/scaleunitview?orgId=1&var-managedApp=$managedApp&var-scaleUnit=$UnitsToDisplay"
+            }
+          ],
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "No Units"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "Healthy"
+                },
+                "2": {
+                  "color": "orange",
+                  "index": 2,
+                  "text": "Degraded"
+                },
+                "3": {
+                  "color": "red",
+                  "index": 3,
+                  "text": "Unhealthy"
+                },
+                "": {
+                  "color": "red",
+                  "index": 4,
+                  "text": "Reading Error!"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 4,
+          "min": 0,
+          "noValue": "ReadingError!",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "#EAB839",
+                "value": 2
+              },
+              {
+                "color": "red",
+                "value": 3
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ingress_avg"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 500000
+                    },
+                    {
+                      "color": "red",
+                      "value": 5000000
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 6000000
+              },
+              {
+                "id": "unit",
+                "value": "Bps"
+              },
+              {
+                "id": "displayName",
+                "value": "Storage Ingress"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Scale Unit Level View - $UnitsToDisplay",
+                    "url": "/d/e9L8rEb4z/scaleunitview-azure-monitor-metrics?orgId=1&var-managedApp=$managedApp&var-scaleUnit=$UnitsToDisplay"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "incoming_avg"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 5000
+                    },
+                    {
+                      "color": "red",
+                      "value": 10000
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 12000
+              },
+              {
+                "id": "displayName",
+                "value": "Incoming Requests"
+              },
+              {
+                "id": "unit",
+                "value": "reqps"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Scale Unit Level View - $UnitsToDisplay",
+                    "url": "/d/e9L8rEb4z/scaleunitview-azure-monitor-metrics?orgId=1&var-managedApp=$managedApp&var-scaleUnit=$UnitsToDisplay"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "func_avg"
+            },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "#EAB839",
+                      "value": 150
+                    },
+                    {
+                      "color": "red",
+                      "value": 300
+                    }
+                  ]
+                }
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "displayName",
+                "value": "Agg. Duration"
+              },
+              {
+                "id": "unit",
+                "value": "ms"
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Scale Unit Level View - $UnitsToDisplay",
+                    "url": "/d/e9L8rEb4z/scaleunitview-azure-monitor-metrics?orgId=1&var-managedApp=$managedApp&var-scaleUnit=$UnitsToDisplay"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 3,
+        "x": 8,
+        "y": 13
+      },
+      "id": 50,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Scale Unit Azure Portal",
+          "url": "https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/rg-Managed-ScaleUnit/providers/Microsoft.Solutions/applications/${UnitsToDisplay}﻿/overview"
+        }
+      ],
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.3.8",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "query": "let unitToDisplay = iff(\"$UnitsToDisplay\" == \"\", \"No Units\", split(\"$UnitsToDisplay\", \"'\")[1]);\nlet unitDetails = split(iff(\"$UnitsToDisplay\" == \"\", \"No Unit;4;0;0;0\", substring(\"$UnitSLOs\", indexof(\"$UnitSLOs\",unitToDisplay))),\"'\")[0];\nrange x1 from 0 to 0 step 1\n| project incoming_avg=split(unitDetails,\";\")[3], func_avg=split(unitDetails,\";\")[4], ingress_avg=split(unitDetails,\";\")[2]\n",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "${DS_AZURE_MONITOR}"
+          },
+          "hide": false,
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "SLOs",
+      "transformations": [],
+      "type": "gauge"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "Prod",
+          "value": "Prod"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "Environment",
+        "options": [
+          {
+            "selected": true,
+            "text": "Prod",
+            "value": "Prod"
+          },
+          {
+            "selected": false,
+            "text": "Staging",
+            "value": "Staging"
+          },
+          {
+            "selected": false,
+            "text": "Dev",
+            "value": "Dev"
+          }
+        ],
+        "query": "Prod, Staging, Dev",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${DS_AZURE_MONITOR}"
+        },
+        "definition": "",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "managedApp",
+        "options": [],
+        "query": {
+          "azureLogAnalytics": {
+            "query": "",
+            "resource": ""
+          },
+          "azureResourceGraph": {
+            "query": "Resources \r\n| where type == \"microsoft.solutions/applicationdefinitions\"\r\n| sort by name asc\r\n| project name\r\n| where name == \"Managed-ScaleUnit\""
+          },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": [
+            "987760b6-d17a-4d60-9c7f-d2d80b9517c8"
+          ]
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${DS_AZURE_MONITOR}"
+        },
+        "definition": "",
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "Location",
+        "options": [],
+        "query": {
+          "azureLogAnalytics": {
+            "query": "",
+            "resource": ""
+          },
+          "azureResourceGraph": {
+            "query": "Resources \r\n| sort by name \r\n| where type == \"microsoft.solutions/applications\"\r\n| where split(parse_json(properties).applicationDefinitionId,\"/\")[array_length(split(parse_json(properties).applicationDefinitionId,\"/\")) - 1] == \"$managedApp\"\r\n| distinct location"
+          },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": [
+            "987760b6-d17a-4d60-9c7f-d2d80b9517c8"
+          ]
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${DS_AZURE_MONITOR}"
+        },
+        "definition": "",
+        "hide": 2,
+        "includeAll": true,
+        "multi": true,
+        "name": "groupMapping",
+        "options": [],
+        "query": {
+          "azureLogAnalytics": {
+            "query": "",
+            "resource": ""
+          },
+          "azureResourceGraph": {
+            "query": "Resources \n| where type == \"microsoft.solutions/applications\"\n| where split(parse_json(properties).applicationDefinitionId,\"/\")[array_length(split(parse_json(properties).applicationDefinitionId,\"/\")) - 1] == (\"$managedApp\")\n| where location in ($Location)\n| project info = strcat(name, \";\", tolower(split(parse_json(properties).managedResourceGroupId, '/')[4]))"
+          },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": [
+            "987760b6-d17a-4d60-9c7f-d2d80b9517c8"
+          ]
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${DS_AZURE_MONITOR}"
+        },
+        "definition": "",
+        "hide": 2,
+        "includeAll": true,
+        "multi": true,
+        "name": "resourceGroups",
+        "options": [],
+        "query": {
+          "azureLogAnalytics": {
+            "query": "",
+            "resource": ""
+          },
+          "azureResourceGraph": {
+            "query": "Resources \n| where type == \"microsoft.solutions/applications\"\n| where location in ($Location)\n| where split(parse_json(properties).applicationDefinitionId,\"/\")[array_length(split(parse_json(properties).applicationDefinitionId,\"/\")) - 1] == (\"$managedApp\")\n| project resourceGroup = tostring(tolower(split(parse_json(properties).managedResourceGroupId, '/')[4]))"
+          },
+          "queryType": "Azure Resource Graph",
+          "refId": "A",
+          "subscriptions": [
+            "987760b6-d17a-4d60-9c7f-d2d80b9517c8"
+          ]
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Unhealthy",
+          "value": "Unhealthy"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "Health",
+        "options": [
+          {
+            "selected": false,
+            "text": "All",
+            "value": "All"
+          },
+          {
+            "selected": false,
+            "text": "Degraded",
+            "value": "Degraded"
+          },
+          {
+            "selected": true,
+            "text": "Unhealthy",
+            "value": "Unhealthy"
+          }
+        ],
+        "query": "All,Degraded,Unhealthy",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${DS_AZURE_MONITOR}"
+        },
+        "definition": "",
+        "hide": 2,
+        "includeAll": true,
+        "multi": true,
+        "name": "UnitSLOs",
+        "options": [],
+        "query": {
+          "azureLogAnalytics": {
+            "query": "let rgArray = split(\"$resourceGroups\",\",\");\r\nlet rgTable = range ind from 0 to array_length(rgArray)-1 step 1\r\n| project ResourceGroup = substring(rgArray[ind],1, strlen(rgArray[ind])-2);\r\nlet healthy = 1;\r\nlet degraded = 2;\r\nlet unhealthy = 3;\r\nlet ingress_zero_bound = 500;\r\nlet ingress_lower_bound = 500000;\r\nlet ingress_upper_bound = 5000000;\r\n//let timeFrom = $__timeFrom();\r\nlet timeTo = $__timeTo();\r\n//let timeInterval = timeTo - timeFrom;\r\nlet storage_ingress =\r\nAzureMetrics\r\n| where tolower(ResourceGroup) in ($resourceGroups) and MetricName == \"Ingress\"\r\n| where TimeGenerated > timeTo - 30m and TimeGenerated <= timeTo\r\n| summarize ingress_avg = avg(Average) by ResourceGroup\r\n| extend storage_signal = iff (ingress_avg< ingress_zero_bound, unhealthy, iff(ingress_avg>ingress_lower_bound, iff(ingress_avg>ingress_upper_bound, unhealthy, degraded), healthy))\r\n| project ResourceGroup = tolower(ResourceGroup), storage_signal, ingress_avg;\r\nlet incoming_zero_bound = 2;\r\nlet incoming_lower_bound = 5000;\r\nlet incoming_upper_bound = 10000;\r\nlet ehn_incoming =\r\nAzureMetrics\r\n| where tolower(ResourceGroup) in ($resourceGroups) and MetricName == \"IncomingRequests\"\r\n| where TimeGenerated > timeTo - 30m and TimeGenerated <= timeTo\r\n| summarize incoming_avg = avg(Total)  by ResourceGroup\r\n| extend ehn_signal = iff (incoming_avg < incoming_zero_bound, unhealthy, iff(incoming_avg>incoming_lower_bound, iff(incoming_avg>incoming_upper_bound, unhealthy, degraded), healthy))\r\n| project ResourceGroup = tolower(ResourceGroup), ehn_signal, incoming_avg;\r\nlet duration_lower_bound = 150;\r\nlet duration_upper_bound = 300;\r\nlet fa_duration = \r\nAppMetrics\r\n| where Name has \"AvgDurationMs\" and split(_ResourceId,\"/\")[4] in  ($resourceGroups)\r\n| where TimeGenerated > timeTo - 30m and TimeGenerated <= timeTo\r\n| project TimeGenerated, Name, Sum, ResourceGroup = tolower(split(_ResourceId,\"/\")[4])\r\n| summarize func_avg = avg(Sum) by ResourceGroup\r\n| extend fa_signal = iff(isnan(func_avg), unhealthy, iff(func_avg>duration_lower_bound, iff(func_avg>duration_upper_bound, unhealthy, degraded), healthy))\r\n| project ResourceGroup, fa_signal, func_avg;\r\nrgTable\r\n| join kind=leftouter  storage_ingress on ResourceGroup\r\n| join kind = leftouter ehn_incoming on ResourceGroup\r\n| join kind = leftouter fa_duration on ResourceGroup\r\n| extend Unit= array_reverse(split(substring(\"$groupMapping\", 0, indexof(\"$groupMapping\", ResourceGroup) - 1), \"'\"))[0], health = iff(isnull(storage_signal) or storage_signal == unhealthy or isnull(ehn_signal) or ehn_signal == unhealthy or isnull(fa_signal) or fa_signal == unhealthy, unhealthy, iff(storage_signal == degraded or ehn_signal == degraded or fa_signal == degraded, degraded, healthy))\r\n| project Map = strcat(Unit,\";\",health,\";\",ingress_avg,\";\",incoming_avg,\";\",func_avg)",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A",
+          "subscription": "987760b6-d17a-4d60-9c7f-d2d80b9517c8"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "hide": 2,
+        "name": "unitOverride",
+        "options": [],
+        "query": "",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "grafana-azure-monitor-datasource",
+          "uid": "${DS_AZURE_MONITOR}"
+        },
+        "definition": "",
+        "hide": 2,
+        "includeAll": true,
+        "multi": true,
+        "name": "UnitsToDisplay",
+        "options": [],
+        "query": {
+          "azureLogAnalytics": {
+            "query": "let slos = split(\"$UnitSLOs\",\",\");\r\nrange x1 from 0 to array_length(slos) - 1 step 1\r\n| project Unit = substring(split(slos[x1],\";\")[0],1), Health = split(slos[x1],\";\")[1]\r\n| where (\"$unitOverride\" != \"\" and Unit == \"$unitOverride\") or (\"$unitOverride\" == \"\" and (\"$Health\" == \"All\" or (\"$Health\" == \"Degraded\" and Health == \"2\") or (\"$Health\" == \"Unhealthy\" and Health == \"3\")))\r\n| order by tostring(Health) desc",
+            "resource": "/subscriptions/987760b6-d17a-4d60-9c7f-d2d80b9517c8/resourceGroups/ControlPlanePOC/providers/Microsoft.OperationalInsights/workspaces/laws-control-plan"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A",
+          "subscription": "987760b6-d17a-4d60-9c7f-d2d80b9517c8"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "TopLevelView",
+  "uid": "OLOcC0-Vz",
+  "version": 13,
+  "weekStart": ""
+}

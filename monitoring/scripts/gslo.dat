@@ -1,0 +1,29 @@
+let timeTo = now();
+let rgArray = dynamic(['$su_array']);
+let eh_incoming =
+AzureMetrics
+| where ResourceProvider == "MICROSOFT.EVENTHUB"
+| where MetricName == "IncomingRequests" and tolower(ResourceGroup) in (rgArray)
+| where TimeGenerated > timeTo - 30m and TimeGenerated <= timeTo
+| summarize IncomingByUnit = avg(Total) by _ResourceId
+| summarize  Incoming = percentiles(IncomingByUnit,  95)
+| project  Incoming, id=1;
+let af_duration =
+AppMetrics
+| where Name == "BlobAggregator AvgDurationMs"
+| where TimeGenerated > timeTo - 30m  and TimeGenerated <= timeTo
+| where split(_ResourceId,"/")[4] in (rgArray)
+| summarize  DurationByUnit = avg(Max) by _ResourceId
+| summarize Duration =  percentiles(DurationByUnit,  95)
+| project  Duration, id = 1;
+let storage_ingress =
+AzureMetrics
+| where ResourceProvider == "MICROSOFT.STORAGE" and MetricName == "Ingress" and tolower(ResourceGroup) in (rgArray)
+| where TimeGenerated > timeTo - 30m  and TimeGenerated <= timeTo
+| summarize IngressByUnit = avg(Average) by _ResourceId
+| summarize StorageIngress = percentiles(IngressByUnit, 95)
+| project StorageIngress, id = 1;
+eh_incoming
+| join kind = inner af_duration on id
+| join kind = inner storage_ingress on id
+| project Incoming, Duration, StorageIngress

@@ -1,0 +1,6 @@
+resource_group_name = "songy-rg"
+control_plane_resource_group_name = "ControlPlanePOC"
+grafana_account_location = "eastus"
+grafana_json_location = ""
+grafana_name = "test-poc"
+laws-name = "laws-control-plan"

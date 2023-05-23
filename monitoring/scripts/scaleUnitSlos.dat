@@ -1,0 +1,46 @@
+let rgArray = dynamic(['$su_array']);
+let groupMapping = "'$su_rg_array'";
+
+let rgTable = range ind from 0 to array_length(rgArray)-1 step 1
+| project ResourceGroup = tostring(rgArray[ind]);
+let status = dynamic(['_', 'healthy', 'degraded', 'unhealthy']);
+
+let healthy = 1;
+let degraded = 2;
+let unhealthy = 3;
+let ingress_zero_bound = 500;
+let ingress_lower_bound = 500000;
+let ingress_upper_bound = 5000000;
+let storage_ingress =
+AzureMetrics
+| where tolower(ResourceGroup) in (rgArray) and MetricName == "Ingress"
+| where TimeGenerated > now() - 30m and TimeGenerated  <= now()
+| summarize ingress_avg = avg(Average) by ResourceGroup
+| extend storage_signal = iff (ingress_avg< ingress_zero_bound, unhealthy, iff(ingress_avg>ingress_lower_bound, iff(ingress_avg>ingress_upper_bound, unhealthy, degraded), healthy))
+| project ResourceGroup = tolower(ResourceGroup), storage_signal, ingress_avg;
+let incoming_zero_bound = 2;
+let incoming_lower_bound = 5000;
+let incoming_upper_bound = 10000;
+let ehn_incoming =
+AzureMetrics
+| where tolower(ResourceGroup) in (rgArray) and MetricName == "IncomingRequests"
+| where TimeGenerated > now() - 30m and TimeGenerated  <= now()
+| summarize incoming_avg = avg(Total)  by ResourceGroup
+| extend ehn_signal = iff (incoming_avg < incoming_zero_bound, unhealthy, iff(incoming_avg>incoming_lower_bound, iff(incoming_avg>incoming_upper_bound, unhealthy, degraded), healthy))
+| project ResourceGroup = tolower(ResourceGroup), ehn_signal, incoming_avg;
+let duration_lower_bound = 70;
+let duration_upper_bound = 80;
+let fa_duration =
+AppMetrics
+| where Name has "AvgDurationMs" and split(_ResourceId,"/")[4] in (rgArray)
+| where TimeGenerated > now() - 30m and TimeGenerated  <= now()
+| project TimeGenerated, Name, Sum, ResourceGroup = tolower(split(_ResourceId,"/")[4])
+| summarize func_avg = avg(Sum) by ResourceGroup
+| extend fa_signal = iff(isnan(func_avg), unhealthy, iff(func_avg>duration_lower_bound, iff(func_avg>duration_upper_bound, unhealthy, degraded), healthy))
+| project ResourceGroup, fa_signal, func_avg;
+rgTable
+| join kind=leftouter  storage_ingress on ResourceGroup
+| join kind = leftouter ehn_incoming on ResourceGroup
+| join kind = leftouter fa_duration on ResourceGroup
+| extend Unit= array_reverse(split(substring(groupMapping, 0, indexof(groupMapping, ResourceGroup) - 1), "'"))[0], health = iff(isnull(storage_signal) or storage_signal == unhealthy or isnull(ehn_signal) or ehn_signal == unhealthy or isnull(fa_signal) or fa_signal == unhealthy, unhealthy, iff(storage_signal == degraded or ehn_signal == degraded or fa_signal == degraded, degraded, healthy))
+| project Unit,health=status[health],ingress_avg,incoming_avg,func_avg
