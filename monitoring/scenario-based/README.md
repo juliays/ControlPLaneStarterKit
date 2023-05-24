@@ -1,17 +1,40 @@
-# DPS Lite Observability
+# Observability
 
-DPS Lite Observabiility is implemented using OpenTelemetry API and Application Insights and Log Analytics workspace as the collector.
+n Telemetry (OTel)](https://opentelemetry.io/docs/what-is-opentelemetry/) provides a set of standardized vendor-agnostic SDKs, APIs, and tools for ingesting, transforming, and sending data to an Observability backend (collector like Log Analytics Workspace). In this solution, observabiility is implemented using OpenTelemetry API and Application Insights and Log Analytics workspace as the collector.
 
 OpenTelemetry Span objects are created to record trace and dependencies.
 
 OpenTelemetry LongCounter and LongHistogram objects are created for each operation to record number of requests and latency respectively.
 
-SpanOperation class is added to encapsulate span and metrics recording. E.g. if you were to add a new AttributeKey, you can add it to SpanOperation and set value where you see fit, and update the DPSLiteObservabilityHelper.endSpan() and DPSLiteObservabilityHelper.updateMetrics() call without updating everywhere.
+SpanOperation class is a helper class that's added to encapsulate span and metrics recording. E.g. if you were to add a new AttributeKey, you can add it to SpanOperation and set value where you see fit, and update the ObservabilityHelper.endSpan() and ObservabilityHelper.updateMetrics() call without having to update it everywhere. updating everywhere.
+
+```java
+
+<SpanOperation.java>
+@NoArgsConstructor
+@AllArgsConstructor
+@lombok.Data
+public class SpanOperation {
+
+    public SpanOperation(String name) {
+        this.name = name;
+        this.start = System.currentTimeMillis();
+        this.status = Constants.OPERATION_STATUS_SUCCESS;
+    }
+    private String name;
+    private String status;
+    private String errorMessage;
+
+    private Exception exception ;
+
+    private long start;
+}
+```
 
 When recording metrics, metrics on span pattern is applied to ensure consistency between span and metrics. Sample implementation is listed below -
 
 ```java
-public void registerDevice() {
+public void methodThatImplementsUserAction() {
   long start = System.currentTimeMillis();
   SpanOperation operation = new SpanOperation("spanName");
   // tracer is a singleton
@@ -27,30 +50,32 @@ public void registerDevice() {
     operation.setStatus(Constants.OPERATION_STATUS_FAILURE);
     operation.setErrorMessage(e.getMessage());
   }finally {
-    DPSLiteObservabilityHelper.endSpan(span, operation);
-    DPSLiteObservabilityHelper.updateMetrics(armCounter, armLatency, operation);
+    // these two methods encapuslates calls to Open Telemetry API
+    ObservabilityHelper.endSpan(span, operation);
+    // counter is a LongCounter object that records the number of requests
+    // latency is a LongHistogram object that records latency
+    ObservabilityHelper.updateMetrics(counter, latency, operation);
   }
 }
 ```
 
-## Services Required (provisioned before DPS Lite is deployed)
+## Prerequiste
 
 ### Log Analytics Workspace
 
 ### Application Insights
 
-    - the DPS application user defined identity needs to have "Monitoring Metrics Publisher" role assigned. This is handled by terraform right now
-    - You can set up application insights the same time you deploy dpslite. Or the more preferred way is to create app insights in a separate resource group and set up reference of the name and resource group to speed up deployment. It takes about 1 hour to provision application insights using terraform scripts. 
+  The identity the application runs under needs to have "Monitoring Metrics Publisher" role assigned. This is can be handled by deployment script
 
 ```bash
 variable "application_insights_name" {
   description = "Pre-existing application insights name"
-  default = "dpslite-app-insight"
+  default = "app-insight-name"
 }
 
 variable "application_insights_resource_group_name" {
   description = "Pre-existing application insights resource group name"
-  default = "rg-ys"
+  default = "rg-app-insight-resource-group"
 }
 ```
 
@@ -60,18 +85,18 @@ variable "application_insights_resource_group_name" {
     - set up Azure Monitor as the data source
     - assign grafana admin role to anyone that needs to do dashboard implementation
 
-## Start DPS Lite service with application insight java agent
+## Start the service with application insight java agent
 
-1. Set up application insights connection string as an environment variable through DPSLite deployment terraform
+1. Set up application insights connection string as an environment variable through deployment scripts
 
-1. Create applicationinsights.json where the applicationinsights-agent.jar is located
+2. Create applicationinsights.json where the applicationinsights-agent.jar is located
 
 ```bash
 
 cat <<EOF > /app/applicationinsights.json
 {
   "role": {
-    "name": "DPS Lite"
+    "name": "<serice name>"
   },
   "preview": {
     "authentication": {
@@ -104,7 +129,7 @@ cat <<EOF > /app/applicationinsights.json
 EOF
 ```
 
-Please don't include
+Please don't include for Spring boot applications. 
 
 ```bash
  "instrumentation": {
@@ -113,11 +138,11 @@ Please don't include
 -      }
 -    },
 ```
-in applicationinsights.json. It will mess up the root span ParentId and make the dashboard stop working. 
+in applicationinsights.json. This will create ghost parentIds that mess up the dependency query.
 
-SERVICE_VERSION, SERVICE_ENVIRONMENT and APP_RESOURCE_GROUP are environment variables that can be set in terraform scripts.
+SERVICE_VERSION, SERVICE_ENVIRONMENT and APP_RESOURCE_GROUP are environment variables that can be set in deployment scripts.
 
-1. Start DPS Lite by adding "-javaagent:/app/agent.jar" to "java" command. e.g. 
+1. Start application by adding "-javaagent:/app/agent.jar" to "java" command. e.g.
    
 ```bash
 
