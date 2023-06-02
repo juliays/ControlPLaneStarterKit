@@ -1,6 +1,6 @@
 # Observability
 
-n Telemetry (OTel)](https://opentelemetry.io/docs/what-is-opentelemetry/) provides a set of standardized vendor-agnostic SDKs, APIs, and tools for ingesting, transforming, and sending data to an Observability backend (collector like Log Analytics Workspace). In this solution, observabiility is implemented using OpenTelemetry API and Application Insights and Log Analytics workspace as the collector.
+Open Telemetry (OTel)](https://opentelemetry.io/docs/what-is-opentelemetry/) provides a set of standardized vendor-agnostic SDKs, APIs, and tools for ingesting, transforming, and sending data to an Observability backend (collector like Log Analytics Workspace). In this solution, observabiility is implemented using OpenTelemetry API and Application Insights and Log Analytics workspace as the collector.
 
 OpenTelemetry Span objects are created to record trace and dependencies.
 
